@@ -15,7 +15,7 @@ export class User{
     @Column({nullable : true, unique : true})
     email : string;
 
-    @Column()
+    @Column({nullable : true})
     password : string;
 
     // relation of user with post
@@ -32,12 +32,12 @@ export class User{
     @UpdateDateColumn()
     updateAt : Date;
 
-    @Column({nullable : true})
+    @Column({default : false, nullable : true})
     isVerfied : boolean;
 
-    @Column({nullable : true, type : 'timestamptz'})
+    @Column({nullable : true})
     activationToken : string;
 
-    @Column({nullable : true})
-    tokenExpiry : string;
+    @Column({nullable : true, type : 'timestamptz'})
+    activationTokenExpiry : Date;
 }

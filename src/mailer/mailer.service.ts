@@ -19,6 +19,22 @@ export class MailService{
         })
     }
 
+    // mailer function to for Activation Link
+    async sentActivationLink(to : string, token : string){
+
+        const url = `${this.config.get('FRONTEND_URL')}/set-password?token=${token}`;
+
+        return this.transporter.sendMail({
+            from : this.config.get('MAIL_FROM'),
+            to : to,
+            subject : 'Set your password to activate account',
+            html : `<p> Click below to set your password (expires in 1 hour):</p>
+                    <a href=${url}">${url}</a>`,
+        });
+    }
+
+
+
     async sendTestMail(to : string){
         const info = await this.transporter.sendMail({
             from : this.config.get<string>('MAIL_FROM'),
