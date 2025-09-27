@@ -31,4 +31,13 @@ export class User{
 
     @UpdateDateColumn()
     updateAt : Date;
+
+    @Column({nullable : true})
+    isVerfied : boolean;
+
+    @Column({nullable : true, type : 'timestamptz'})
+    activationToken : string;
+
+    @Column({nullable : true})
+    tokenExpiry : string;
 }
