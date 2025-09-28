@@ -114,7 +114,7 @@ export class AuthService {
 
         const user = await this.userService.findByEmail(email);
 
-        if(!user) return null;
+        if(!user) throw new BadRequestException("User not found");
 
         const match = bcrypt.compare(password, user.password);
 

@@ -1,10 +1,10 @@
-import { BadRequestException, Body, Controller, Get, Post, Query, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Post, Query, Res, UnauthorizedException } from "@nestjs/common";
 import { MailService } from "../mailer/mailer.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { AuthService } from "./auth.service";
 import { SetPasswordDto } from "./dto/set-password.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
-import { use } from "passport";
+import type { Response } from "express";
 
 
 
@@ -40,4 +40,22 @@ export class AuthController {
     }
 
 
+    @Post('testlogin')
+    async testLogin(@Body() dto : LoginUserDto, @Res({passthrough : true}) res : Response){
+
+        const user = await this.authService.validateUser(dto.email, dto.password);
+
+        if(!user) throw new UnauthorizedException("Invalid credentials");
+
+        const { access_Token, user : safeUser} = await this.authService.login(user);
+
+        res.cookie('jwt', access_Token,{
+            httpOnly : true,
+            secure : false,
+            sameSite : 'lax',
+            maxAge : 60 * 60 * 1000
+        })
+
+        return { user : safeUser};
+    }
 }

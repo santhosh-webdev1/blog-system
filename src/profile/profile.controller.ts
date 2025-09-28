@@ -2,10 +2,10 @@ import { Controller, Get } from "@nestjs/common";
 import { GetUser } from "src/auth/decorators/get-user.decorator";
 
 
-@Controller('/dashboard')
+@Controller('/auth')
 export class ProfileController{
 
-    @Get('/home')
+    @Get('/me')
     getProfile(@GetUser() user : any){
         return user;
     }
