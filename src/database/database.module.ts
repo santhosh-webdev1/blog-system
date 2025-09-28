@@ -23,6 +23,7 @@ import { Comment} from "src/comment/comment.entity"
                 synchronize : true,
                 logging : true,
                 entities : [User, Post, Comment],
+                dropSchema : true
             })
         })
     ],
