@@ -116,7 +116,7 @@ export class AuthService {
 
         if(!user) throw new BadRequestException("User not found");
 
-        const match = bcrypt.compare(password, user.password);
+        const match = await bcrypt.compare(password, user.password);
 
         if(!match) throw new BadRequestException("Invalid password");
 

@@ -16,7 +16,7 @@ export class Post{
     content : string;
 
     // relation of post to user
-    @ManyToOne( () => User, (user) => user.posts, { onDelete : 'CASCADE'})
+    @ManyToOne( () => User, (user) => user.posts, { onDelete : 'CASCADE', eager : true})
     user : User;
 
     // relation of post to comment
