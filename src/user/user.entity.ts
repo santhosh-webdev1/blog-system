@@ -35,9 +35,9 @@ export class User{
     @Column({default : false, nullable : true})
     isVerfied : boolean;
 
-    @Column({nullable : true})
-    activationToken : string;
+    @Column({nullable : true, type : 'text'})
+    activationToken : string | null;
 
-    @Column({nullable : true, type : 'timestamptz'})
-    activationTokenExpiry : Date;
+    @Column({type : 'timestamptz',nullable : true})
+    activationTokenExpiry : Date | null;
 }

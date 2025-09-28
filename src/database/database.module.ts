@@ -22,7 +22,8 @@ import { Comment} from "src/comment/comment.entity"
                 autoLoadEntities : true,
                 synchronize : true,
                 logging : true,
-                entities : [User, Post, Comment]
+                entities : [User, Post, Comment],
+                dropSchema : true
             })
         })
     ],

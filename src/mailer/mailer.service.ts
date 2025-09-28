@@ -29,7 +29,7 @@ export class MailService{
             to : to,
             subject : 'Set your password to activate account',
             html : `<p> Click below to set your password (expires in 1 hour):</p>
-                    <a href=${url}">${url}</a>`,
+                    <a href=${url}>${url}</a>`,
         });
     }
 
