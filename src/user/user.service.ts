@@ -15,32 +15,12 @@ export class UserService{
         @InjectRepository(User) private readonly userRepo : Repository<User>,
     ) {}
 
-    // async create(dto : CreateUserDto){
-    //     const existing = await this.userRepo.findOne({ where: {email : dto.email}});
 
-    //     if(existing) throw new BadRequestException("Email already exists");
+    async findByEmail(email : string){
+        return this.userRepo.findOne({where : {email}});
+    }
 
-    //     const hashed = await bcrypt.hash(dto.password, 10);
-
-    //     const user = this.userRepo.create({...dto, password : hashed});
-
-    //     return this.userRepo.save(user);
-    // }
-
-    // async login(dto : LoginUserDto){
-
-    //     const existingUser = await this.userRepo.findOne({where : {email : dto.email}});
-    //     if(!existingUser) throw new NotFoundException('User not found');
-
-    //     const isValid = await bcrypt.compare(dto.password, existingUser.password);
-    //     if(!isValid) throw new UnauthorizedException('Invalid credentials');
-
-    //     const { password, ...result } = existingUser;
-
-    //     return result;
-    // }
-
-    findById(id : number){
+    async findById(id : number){
         return this.userRepo.findOne({where : { id }});
     }
 

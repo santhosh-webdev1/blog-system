@@ -7,7 +7,8 @@ import { BadRequestException } from "@nestjs/common";
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt'
 import { SetPasswordDto } from "./dto/set-password.dto";
-import { emit } from "process";
+import { UserService } from "src/user/user.service";
+import { JwtService } from "@nestjs/jwt";
 
 
 export class AuthService {
@@ -15,6 +16,9 @@ export class AuthService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         private readonly mailService: MailService,
+        private readonly userService : UserService,
+        private readonly jwtService : JwtService
+
     ) { }
 
     async register(dto: CreateUserDto) {
@@ -104,7 +108,30 @@ export class AuthService {
         }
 
         return true;
+    }
 
+    async validateUser(email : string, password : string){
+
+        const user = await this.userService.findByEmail(email);
+
+        if(!user) return null;
+
+        const match = bcrypt.compare(password, user.password);
+
+        if(!match) throw new BadRequestException("Invalid password");
+
+        const { password : _pwd, ...safeUser} = user;
+
+        return safeUser;
+    }
+
+    async login(user : any){
+        
+        const payload = { sub : user.id, email : user.email };
+
+        const access_Token = this.jwtService.sign(payload);
+
+        return { access_Token, user};
     }
 
 }

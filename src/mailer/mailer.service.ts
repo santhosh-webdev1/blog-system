@@ -34,7 +34,6 @@ export class MailService{
     }
 
 
-
     async sendTestMail(to : string){
         const info = await this.transporter.sendMail({
             from : this.config.get<string>('MAIL_FROM'),
