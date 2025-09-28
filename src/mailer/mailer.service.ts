@@ -22,7 +22,9 @@ export class MailService{
     // mailer function to for Activation Link
     async sentActivationLink(to : string, token : string){
 
-        const url = `${this.config.get('FRONTEND_URL')}/set-password?token=${token}`;
+        const url = `${this.config.get('FRONTEND_URL')}/set-password` +
+            `?email=${encodeURIComponent(to)}` +
+            `&token=${encodeURIComponent(token)}`;
 
         return this.transporter.sendMail({
             from : this.config.get('MAIL_FROM'),

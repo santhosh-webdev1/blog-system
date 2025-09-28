@@ -45,7 +45,7 @@ export class AuthService {
 
         await this.userRepository.save(user);
 
-        await this.mailService.sentActivationLink(dto.email, tokenHash);
+        await this.mailService.sentActivationLink(dto.email, rawToken);
 
         return { message: 'Activation email sent successfully' };
     }
@@ -53,20 +53,18 @@ export class AuthService {
 
     async setPassword(dto : SetPasswordDto){
 
-        const { token, password } = dto;
+        const { email, token, password } = dto;
 
-        const user = await this.userRepository.findOne({
-            where : { activationToken : Not(IsNull())},
-        })
+        const user = await this.userRepository.findOne({ where : {email }});
 
         if(!user) throw new BadRequestException("Invalid or missing token");
 
-        if(!user.activationToken){
-            throw new BadRequestException("");
+        if (!user.activationToken) {
+            throw new BadRequestException('No active token. Please request a new reset link.');
         }
 
-        // const isMatch = await bcrypt.compare(token, user.activationToken);
-        // if(!isMatch) throw new BadRequestException("Invaadflid token");
+        const isMatch = await bcrypt.compare(token, user.activationToken);
+        if(!isMatch) throw new BadRequestException("Invalid token");
 
         if(!user.activationTokenExpiry || user.activationTokenExpiry < new Date()){
             throw new BadRequestException("Link expired");
@@ -85,29 +83,23 @@ export class AuthService {
     }
 
 
-    async validateToken(token : string){
+    async validateToken(email : string, token : string){
 
-        console.log(token);
+        const user = await this.userService.findByEmail(email);
 
-        const user = await this.userRepository.findOne({
-            where : { activationToken : Not(IsNull())}
-        });
+        if(!user) return { valid : true, reason : "User not found" };
 
-        if(!user) return false;
-
-        if(!user.activationToken){
-            throw new BadRequestException("Invalid Token");
-        }
+        if (!user.activationToken) return { valid: false, reason: "Invalid token" };
 
         const isMatch = await bcrypt.compare(token, user.activationToken);
 
         if(!isMatch) return { valid : false, reason : "Invalid token"};
 
         if( !user.activationTokenExpiry || user.activationTokenExpiry < new Date()){
-            throw new BadRequestException("Token expired");
+            return { valid : false, reason : "Token Expired"};
         }
 
-        return true;
+        return { valid : true };
     }
 
     async validateUser(email : string, password : string){

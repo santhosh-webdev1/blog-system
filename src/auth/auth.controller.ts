@@ -20,9 +20,9 @@ export class AuthController {
 
 
     @Post('validate-token')
-    async validateToken(@Query('token') token: string) {
+    async validateToken(@Query('token') token: string, @Query('email') email : string) {
         if (!token) throw new BadRequestException('Token is required');
-        return this.authService.validateToken(token);
+        return this.authService.validateToken(email, token);
     }
 
     @Post('set-password')
@@ -30,14 +30,14 @@ export class AuthController {
         return this.authService.setPassword(dto);
     }
 
-    @Post('login')
-    async login(@Body() dto : LoginUserDto){
-        const user = await this.authService.validateUser(dto.email, dto.password);
+    // @Post('login')
+    // async login(@Body() dto : LoginUserDto){
+    //     const user = await this.authService.validateUser(dto.email, dto.password);
 
-        if(!user) throw new UnauthorizedException("Invalid credentials");
+    //     if(!user) throw new UnauthorizedException("Invalid credentials");
 
-        return this.authService.login(user);
-    }
+    //     return this.authService.login(user);
+    // }
 
 
     @Post('testlogin')
